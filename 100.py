@@ -2,6 +2,8 @@ import enum
 import random
 import datetime
 
+from bunch import generateRandomBunch
+
 tables = {
     'Canteen': {
         'id': int,
@@ -37,22 +39,6 @@ tables = {
 
 insertUpdateData = ["Александроус", "Андреев", "Леха", "Колян"]
 
-
-def generation(arr: list, dlina: int) -> list:
-	def generator(sgen: list, prev_index: int = -1):
-		if len(sgen) < dlina:
-			for i in range(prev_index + 1,len(arr)):
-				sgen.append(arr[i])
-				yield from generator(sgen, i)
-				sgen.pop()
-		else:
-			yield sgen.copy()
-	return [i for i in generator([])]
-
-def generateRandomBunch(arr: list):
-    bunch = random.choice(generation(arr, random.randrange(1, len(arr))))
-    random.shuffle(bunch)
-    return bunch
     
 def generateColumns(tableName : str) -> str:
     table_keys = list(tables[tableName].keys())
@@ -97,6 +83,7 @@ def abstractComand(command, table='', selectStatement='') -> str:
         return f"{stringCommand} INTO {table} VALUES ({where});"
     elif command == sql.SELECT:
         columns = generateColumns(table)
+
         return f"{stringCommand} {columns} from {table}{selectStatement} WHERE {where};"
     elif command == sql.UPDATE:
         return f"{stringCommand} {table} SET {{ }};"
@@ -125,6 +112,20 @@ class sql(enum.Enum):
     INSERT = "INSERT",
     ZATICHKA = ""
 
+
+def generateCreatingTable(table_name):
+    res = f"CREATE TABLE {table_name} ("
+    table = tables[table_name]
+    for column_name in table:
+        column_type = str(table[column_name].__name__) # TODO нужны классы из sql
+        # <col_name1> <col_type1>
+        name_and_type = f"{column_name} {column_type}"
+        res += name_and_type + ", "
+    res += ");"
+    return res
+
+for table_name in tables:
+    print(generateCreatingTable(table_name))
 
 
 for i in range(50):
