@@ -93,11 +93,15 @@ def generateCreatingTable(table_name):
     res += ");"
     return res
 
-for table_name in tables:
-    print(generateCreatingTable(table_name))
+def generate_sql_requests():
+    for table_name in tables:
+        yield generateCreatingTable(table_name)
 
 
-for i in range(50):
-    funarray = [updateTemplate(), selectTemplate(),
-            deleteTemplate(), insertTemplate()]
-    print(random.choice(funarray))
+    for i in range(50):
+        funarray = [updateTemplate(), selectTemplate(),
+                deleteTemplate(), insertTemplate()]
+        yield random.choice(funarray)
+
+for request in generate_sql_requests():
+    print(request)
