@@ -21,16 +21,18 @@ def randomBoolean() -> bool:
     return bool(random.getrandbits(1))
 
 
-def toStr(listok: list):
+def toStr(listok: list, table=None):
     columns_str = ""
     for field in listok:
+        if table:
+            columns_str += f"{table}."
         columns_str += field
         if field != listok[-1]:
             columns_str += ', '
     return columns_str
 
 
-def generateWhereStatements(table):
+def generateWhereStatements(table, joinTableName=False):
     whereArrays = []
     columns = generateColumns(table)
     for column in columns:
@@ -44,7 +46,11 @@ def generateWhereStatements(table):
             whereElements = random.random()
         else:
             whereElements = None
-        whereArrays.append(f"{column}={whereElements}")
+
+        if joinTableName:
+            whereArrays.append(f"{table}.{column}={whereElements}")
+        else:
+            whereArrays.append(f"{column}={whereElements}")
     return toStr(whereArrays)
 
 
@@ -91,9 +97,41 @@ def insertTemplate(table, where):
     return f"INSERT INTO {table} VALUES ({where});"
 
 
-def selectTemplate(table, where):
+def selectTemplate(table, where, join=False):
     columns = toStr(generateColumns(table))
-    return f"SELECT {columns} FROM {table} WHERE {where};"
+    distinct = ""
+    if not bool(random.randint(0, 5)):
+        distinct = "DISTINCT "
+    return f"SELECT {distinct}{columns} FROM {table} WHERE {where};"
+
+
+def generateAlter():
+    pass
+
+
+def generateSelectWithJoin():
+    if randomBoolean():
+        typeOfJoin = 'INNER'
+    else:
+        typeOfJoin = "OUTTER"
+
+    if random.randint(0, 2) == 0:  # иногда вылетает
+        mod = "LEFT"
+    elif random.randint(0, 2) == 1:
+        mod = "RIGHT"
+    elif random.randint(0, 2) == 2:
+        mod = "FULL"
+
+    table = random.choice(list(tables.keys()))
+    columns = generateColumns(table)
+
+    table2 = random.choice(list(tables.keys()))
+    columns2 = generateColumns(table2)
+
+    print(f"SELECT {toStr(columns, table=table)}, "
+          f"{toStr(columns2, table=table2)} FROM {table} {typeOfJoin} {mod} {table2} "
+          f"WHERE {generateWhereStatements(table, joinTableName=True)}, "
+          f"{generateWhereStatements(table2, joinTableName=True)};")
 
 
 def generate_sql_requests():
@@ -108,4 +146,4 @@ def generate_sql_requests():
         where = generateWhereStatements(table)
         yield selectTemplate(table, where)
 
-
+    generateSelectWithJoin()
