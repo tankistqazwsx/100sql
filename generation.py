@@ -7,17 +7,10 @@ from tables import tables
 insertUpdateData = ["Александроус", "Андреев", "Леха", "Колян"]
 
 
-def generateColumns(tableName: str) -> str:
+def generateColumns(tableName: str) -> list:
     table_keys = list(tables[tableName].keys())
     bunch_of_keys: list = generateRandomBunch(table_keys)
-    columns_str = ""
-
-    for field in bunch_of_keys:
-        columns_str += field
-        if field != bunch_of_keys[-1]:
-            columns_str += ', '
-
-    return columns_str
+    return bunch_of_keys
 
 
 def singleQuote(word: str):
@@ -28,30 +21,37 @@ def randomBoolean() -> bool:
     return bool(random.getrandbits(1))
 
 
-def generateWhereStatements():
+def toStr(listok: list):
+    columns_str = ""
+    for field in listok:
+        columns_str += field
+        if field != listok[-1]:
+            columns_str += ', '
+    return columns_str
+
+
+def generateWhereStatements(table):
     whereArrays = []
-    for table in tables.values():
-        for column in table:
-            if column != "*":
-                columnType = table[column]["type"]
-                if columnType == "VARCHAR":
-                    whereElements = f"{random.choice(insertUpdateData)}"
-                    whereElements = singleQuote(whereElements)
-                elif columnType == "INTEGER":
-                    whereElements = random.randint(0, 1000)
-                elif columnType == "FLOAT":
-                    whereElements = random.random()
-                else:
-                    whereElements = None
-                whereArrays.append(f"{column}={whereElements}")
-    return random.choice(whereArrays)
+    columns = generateColumns(table)
+    for column in columns:
+        columnType = tables[table][column]['type']
+        if columnType == "VARCHAR":
+            whereElements = f"{random.choice(insertUpdateData)}"
+            whereElements = singleQuote(whereElements)
+        elif columnType == "INTEGER":
+            whereElements = random.randint(0, 1000)
+        elif columnType == "FLOAT":
+            whereElements = random.random()
+        else:
+            whereElements = None
+        whereArrays.append(f"{column}={whereElements}")
+    return toStr(whereArrays)
 
 
 def generateCreatingTable(table_name):
     res = "CREATE TABLE "
     if randomBoolean():
         res += "IF NOT EXISTS "
-
     res += f"{table_name} ("
     table = tables[table_name]
     for column_name in table:
@@ -92,7 +92,7 @@ def insertTemplate(table, where):
 
 
 def selectTemplate(table, where):
-    columns = generateColumns(table)
+    columns = toStr(generateColumns(table))
     return f"SELECT {columns} FROM {table} WHERE {where};"
 
 
@@ -103,14 +103,9 @@ def generate_sql_requests():
     for table_name in tables:
         yield generateDropTable(table_name)
 
-    table = random.choice(list(tables.keys()))
-    where = generateWhereStatements()
     for i in range(10):
-        where = generateWhereStatements()
-        columns = generateColumns(table)
-
-
-    for i in range(10):
+        table = random.choice(list(tables.keys()))
+        where = generateWhereStatements(table)
         yield selectTemplate(table, where)
 
 
