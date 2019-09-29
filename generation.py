@@ -1,4 +1,3 @@
-import enum
 import random
 
 from bunch import generateRandomBunch
@@ -25,6 +24,10 @@ def singleQuote(word: str):
     return f"'{word}'"
 
 
+def randomBoolean() -> bool:
+    return bool(random.getrandbits(1))
+
+
 def generateWhereStatements():
     whereArrays = []
     for table in tables.values():
@@ -44,52 +47,12 @@ def generateWhereStatements():
     return random.choice(whereArrays)
 
 
-def abstractComand(command, table='', selectStatement='') -> str:
-    stringCommand = random.choice(command.value)
-
-    if not table:
-        table = random.choice(list(tables.keys()))
-        # пока допустим что только один оператор
-
-    where = generateWhereStatements()
-
-    if command == sql.DELETE:
-        return f"{stringCommand} FROM {table}{selectStatement} WHERE {where};"
-    elif command == sql.INSERT:
-        return f"{stringCommand} INTO {table} VALUES ({where});"
-    elif command == sql.UPDATE:
-        return f"{stringCommand} {table} SET {{{where}}};"
-    elif command == sql.SELECT:
-        columns = generateColumns(table)
-        where = generateWhereStatements()
-        return f"SELECT {columns} FROM {table} WHERE {where};"
-
-
-def updateTemplate():
-    return abstractComand(sql.UPDATE)
-
-
-def deleteTemplate():
-    return abstractComand(sql.DELETE)
-
-
-def insertTemplate():
-    return abstractComand(sql.INSERT)
-
-
-def selectTemplate():
-    return abstractComand(sql.SELECT)
-
-
-class sql(enum.Enum):
-    SELECT = "SELECT",
-    UPDATE = "UPDATE",
-    DELETE = "DELETE",
-    INSERT = "INSERT",
-
-
 def generateCreatingTable(table_name):
-    res = f"CREATE TABLE IF NOT EXISTS {table_name} ("
+    res = "CREATE TABLE "
+    if randomBoolean():
+        res += "IF NOT EXISTS "
+
+    res += f"{table_name} ("
     table = tables[table_name]
     for column_name in table:
         column_type = table[column_name]["type"]
@@ -101,15 +64,53 @@ def generateCreatingTable(table_name):
         name_and_type = f"{column_name} {column_type}"
         res += name_and_type + ", "
     res += ");"
-
     return res
+
+
+def generateDropTable(table_name):
+    res = "DROP TABLE "
+    if randomBoolean():
+        res += "IF EXISTS "
+    res += f"{table_name};"
+    return res
+
+
+def generateDatabase(database_name):
+    return f"CREATE DATABASE {database_name}"
+
+
+def updateTemplate(table, where):
+    return f"UPDATE {table} SET {{{where}}};"
+
+
+def deleteTemplate(table, where):
+    return f"DELETE FROM {table} WHERE {where};"
+
+
+def insertTemplate(table, where):
+    return f"INSERT INTO {table} VALUES ({where});"
+
+
+def selectTemplate(table, where):
+    columns = generateColumns(table)
+    return f"SELECT {columns} FROM {table} WHERE {where};"
 
 
 def generate_sql_requests():
     for table_name in tables:
         yield generateCreatingTable(table_name)
 
-    for i in range(100):
-        funarray = [updateTemplate(), selectTemplate(),
-                    deleteTemplate(), insertTemplate()]
-        yield random.choice(funarray)
+    for table_name in tables:
+        yield generateDropTable(table_name)
+
+    table = random.choice(list(tables.keys()))
+    where = generateWhereStatements()
+    for i in range(10):
+        where = generateWhereStatements()
+        columns = generateColumns(table)
+
+
+    for i in range(10):
+        yield selectTemplate(table, where)
+
+
