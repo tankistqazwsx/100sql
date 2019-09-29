@@ -23,12 +23,12 @@ def generateWhereStatements():
     for table in tables.values():
         for column in table:
             if column != "*":
-                columnType = table[column]
-                if columnType == str:
+                columnType = table[column]["type"]
+                if columnType == "VARCHAR":
                     whereElements = f"{random.choice(insertUpdateData)}"
-                elif columnType == int:
+                elif columnType == "INTEGER":
                     whereElements = random.randint(0, 1000)
-                elif columnType == float:
+                elif columnType == "FLOAT":
                     whereElements = random.random()
                 else:
                     whereElements = None
@@ -50,10 +50,6 @@ def abstractComand(command, table='', selectStatement='') -> str:
         return f"{stringCommand} from {table}{selectStatement} WHERE {where};"
     elif command == sql.INSERT:
         return f"{stringCommand} INTO {table} VALUES ({where});"
-    elif command == sql.SELECT:
-        columns = generateColumns(table)
-
-        return f"{stringCommand} {columns} from {table}{selectStatement} WHERE {where};"
     elif command == sql.UPDATE:
         return f"{stringCommand} {table} SET {{ }};"
 
@@ -70,10 +66,6 @@ def insertTemplate():
     return abstractComand(sql.INSERT)
 
 
-def selectTemplate():
-    return abstractComand(sql.SELECT)
-
-
 class sql(enum.Enum):
     SELECT = "SELECT",
     UPDATE = "UPDATE",
@@ -81,17 +73,27 @@ class sql(enum.Enum):
     INSERT = "INSERT",
     ZATICHKA = ""
 
-
 def generateCreatingTable(table_name):
     res = f"CREATE TABLE {table_name} ("
     table = tables[table_name]
     for column_name in table:
-        column_type = str(table[column_name].__name__) # TODO нужны классы из sql
+        column_type = table[column_name]["type"]
+        try:
+            column_type += "(" + table[column_name]["len"] + ")"
+        except KeyError as identifier:
+            pass
         # <col_name1> <col_type1>
         name_and_type = f"{column_name} {column_type}"
         res += name_and_type + ", "
     res += ");"
     return res
+
+def generateSelect(table_name):
+    table = random.choice(list(tables.keys()))
+    selectStatement=''
+    columns = generateColumns(table)
+    where = generateWhereStatements()
+    return f"SELECT {columns} from {table}{selectStatement} WHERE {where};"
 
 def generate_sql_requests():
     for table_name in tables:
@@ -99,7 +101,7 @@ def generate_sql_requests():
 
 
     for i in range(50):
-        funarray = [updateTemplate(), selectTemplate(),
+        funarray = [updateTemplate(), generateSelect(random.choice(list(tables.keys()))),
                 deleteTemplate(), insertTemplate()]
         yield random.choice(funarray)
 

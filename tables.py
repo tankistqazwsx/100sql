@@ -1,32 +1,108 @@
 tables = {
-    'Canteen': {
-        'id': int,
-        'title': str,
-        'workingHours': int,
-        "description": str,
-        "phoneNumber": int
+    'Canteen': 
+    {
+        'id': {
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'title': {
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'workingHours': {
+            'type': 'DATE',
+            'info': {'notNull'}
+        },
+        'description':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'phoneNumber':{
+            'type': 'INTEGER',
+            'len': '11'
+        }
     },
-    'CanteenWorker': {
-        'id': int,
-        'fullName': str,
-        'canteenId': int
+    'CanteenWorker': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'fullName':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'canteenId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': 'Canteen'
+        },
     },
-    'Courier': {
-        'id': int,
-        'title': str,
-        'workingHours': int,
-        "description": str,
-        "phoneNumber": int
+    'Courier': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'title':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'description':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'phoneNumber':{
+            'type': 'INTEGER',
+            'len': '11',
+        }
     },
-    'Order': {
-        'id': int,
-        'orderNumber': int,
-        'orderTime': int,
-        "quantityDishes": int,
-        "status": str,
-        "amountPayable": int,
-        "canteenWorkerId": int,
-        "courierId": int,
-        "clientId": int
-    },
+    'Order': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'orderNumber':{
+            'type': 'INTEGER',
+            'info': {'notNull'}
+        },
+        'orderTime':{
+            'type': 'TIME',
+            'info': {'notNull'}
+        },
+        'quantityDishes':{
+            'type': 'INTEGER',
+            'info': {'notNull'}
+        },
+        'status':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'amountPayable':{
+            'type': 'INTEGER',
+            'info': {'notNull'}
+        },
+        'canteenWorkerId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': 'Canteen'
+        },
+        'courierId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': 'Courier'
+        },
+        'clientId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': 'Client'
+        },
+    }
 }
