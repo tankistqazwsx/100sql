@@ -10,17 +10,18 @@ insertUpdateData = ["Александроус", "Андреев", "Леха", "�
 
 def generateColumns(tableName: str) -> str:
     table_keys = list(tables[tableName].keys())
-    bunch_of_keys = generateRandomBunch(table_keys)
+    bunch_of_keys: list = generateRandomBunch(table_keys)
     columns_str = ""
-    for i in range(len(bunch_of_keys)):
-        columns_str += singleQuote(bunch_of_keys[i])
-        if i != len(bunch_of_keys) - 1:
-            columns_str += ','
+
+    for field in bunch_of_keys:
+        columns_str += field
+        if field != bunch_of_keys[-1]:
+            columns_str += ', '
 
     return columns_str
 
 
-def singleQuote(word):
+def singleQuote(word: str):
     return f"'{word}'"
 
 
@@ -53,11 +54,15 @@ def abstractComand(command, table='', selectStatement='') -> str:
     where = generateWhereStatements()
 
     if command == sql.DELETE:
-        return f"{stringCommand} from {table}{selectStatement} WHERE {where};"
+        return f"{stringCommand} FROM {table}{selectStatement} WHERE {where};"
     elif command == sql.INSERT:
         return f"{stringCommand} INTO {table} VALUES ({where});"
     elif command == sql.UPDATE:
-        return f"{stringCommand} {table} SET {{ }};"
+        return f"{stringCommand} {table} SET {{{where}}};"
+    elif command == sql.SELECT:
+        columns = generateColumns(table)
+        where = generateWhereStatements()
+        return f"SELECT {columns} FROM {table} WHERE {where};"
 
 
 def updateTemplate():
@@ -70,6 +75,10 @@ def deleteTemplate():
 
 def insertTemplate():
     return abstractComand(sql.INSERT)
+
+
+def selectTemplate():
+    return abstractComand(sql.SELECT)
 
 
 class sql(enum.Enum):
@@ -96,18 +105,11 @@ def generateCreatingTable(table_name):
     return res
 
 
-def generateSelect(table_name):
-    selectStatement = ''
-    columns = generateColumns(table_name)
-    where = generateWhereStatements()
-    return f"SELECT {columns} from {table_name}{selectStatement} WHERE {where};"
-
-
 def generate_sql_requests():
     for table_name in tables:
         yield generateCreatingTable(table_name)
 
-    for i in range(50):
-        funarray = [updateTemplate(), generateSelect(random.choice(list(tables.keys()))),
+    for i in range(100):
+        funarray = [updateTemplate(), selectTemplate(),
                     deleteTemplate(), insertTemplate()]
         yield random.choice(funarray)
