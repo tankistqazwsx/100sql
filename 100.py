@@ -6,102 +6,120 @@ from bunch import generateRandomBunch
 
 from tables import tables
 
-insertUpdateData = ["Александроус", "Андреев", "Леха", "Колян"]
+# insertUpdateData = ["Александроус", "Андреев", "Леха", "Колян"]
 
     
-def generateColumns(tableName : str) -> str:
-    table_keys = list(tables[tableName].keys())
-    bunch_of_keys = generateRandomBunch(table_keys)
-    columns_str = ""
-    for i in range(len(bunch_of_keys)):
-        columns_str += '\'' + bunch_of_keys[i] + '\'' + ('' if i == len(bunch_of_keys)-1 else ',')
-    return columns_str
+# def generateColumns(tableName : str) -> str:
+#     table_keys = list(tables[tableName].keys())
+#     bunch_of_keys = generateRandomBunch(table_keys)
+#     columns_str = ""
+#     for i in range(len(bunch_of_keys)):
+#         columns_str += '\'' + bunch_of_keys[i] + '\'' + ('' if i == len(bunch_of_keys)-1 else ',')
+#     return columns_str
 
 
-def generateWhereStatements():
-    whereArrays = []
-    for table in tables.values():
-        for column in table:
-            if column != "*":
-                columnType = table[column]
-                if columnType == str:
-                    whereElements = f"{random.choice(insertUpdateData)}"
-                elif columnType == int:
-                    whereElements = random.randint(0, 1000)
-                elif columnType == float:
-                    whereElements = random.random()
-                else:
-                    whereElements = None
-                whereArrays.append(f"{column}={whereElements}")
-    return random.choice(whereArrays)
+# def generateWhereStatements():
+#     whereArrays = []
+#     for table in tables.values():
+#         for column in table:
+#             if column != "*":
+#                 columnType = table[column]
+#                 if columnType == str:
+#                     whereElements = f"{random.choice(insertUpdateData)}"
+#                 elif columnType == int:
+#                     whereElements = random.randint(0, 1000)
+#                 elif columnType == float:
+#                     whereElements = random.random()
+#                 else:
+#                     whereElements = None
+#                 whereArrays.append(f"{column}={whereElements}")
+#     return random.choice(whereArrays)
 
 
-def abstractComand(command, table='', selectStatement='') -> str:
-    stringCommand = random.choice(command.value)
+# def abstractComand(command, table='', selectStatement='') -> str:
+#     stringCommand = random.choice(command.value)
     
-    if not table:
-        table = random.choice(list(tables.keys()))
-        # пока допустим что только один оператор
-        operationsColumn = random.choice(list(tables[table].values()))
+#     if not table:
+#         table = random.choice(list(tables.keys()))
+#         # пока допустим что только один оператор
+#         operationsColumn = random.choice(list(tables[table].values()))
     
-    where = generateWhereStatements()
+#     where = generateWhereStatements()
 
-    if command == sql.DELETE:
-        return f"{stringCommand} from {table}{selectStatement} WHERE {where};"
-    elif command == sql.INSERT:
-        return f"{stringCommand} INTO {table} VALUES ({where});"
-    elif command == sql.SELECT:
-        columns = generateColumns(table)
+#     if command == sql.DELETE:
+#         return f"{stringCommand} from {table}{selectStatement} WHERE {where};"
+#     elif command == sql.INSERT:
+#         return f"{stringCommand} INTO {table} VALUES ({where});"
+#     elif command == sql.SELECT:
+#         columns = generateColumns(table)
 
-        return f"{stringCommand} {columns} from {table}{selectStatement} WHERE {where};"
-    elif command == sql.UPDATE:
-        return f"{stringCommand} {table} SET {{ }};"
-
-
-def updateTemplate():
-    return abstractComand(sql.UPDATE)
+#         return f"{stringCommand} {columns} from {table}{selectStatement} WHERE {where};"
+#     elif command == sql.UPDATE:
+#         return f"{stringCommand} {table} SET {{ }};"
 
 
-def deleteTemplate():
-    return abstractComand(sql.DELETE)
+# def updateTemplate():
+#     return abstractComand(sql.UPDATE)
 
 
-def insertTemplate():
-    return abstractComand(sql.INSERT)
+# def deleteTemplate():
+#     return abstractComand(sql.DELETE)
 
 
-def selectTemplate():
-    return abstractComand(sql.SELECT)
+# def insertTemplate():
+#     return abstractComand(sql.INSERT)
 
 
-class sql(enum.Enum):
-    SELECT = "SELECT",
-    UPDATE = "UPDATE",
-    DELETE = "DELETE",
-    INSERT = "INSERT",
-    ZATICHKA = ""
+# def selectTemplate():
+#     return abstractComand(sql.SELECT)
 
 
-def generateCreatingTable(table_name):
-    res = f"CREATE TABLE {table_name} ("
-    table = tables[table_name]
-    for column_name in table:
-        column_type = str(table[column_name].__name__) # TODO нужны классы из sql
-        # <col_name1> <col_type1>
-        name_and_type = f"{column_name} {column_type}"
-        res += name_and_type + ", "
-    res += ");"
+# class sql(enum.Enum):
+#     SELECT = "SELECT",
+#     UPDATE = "UPDATE",
+#     DELETE = "DELETE",
+#     INSERT = "INSERT",
+#     ZATICHKA = ""
+
+
+# def generateCreatingTable(table_name):
+#     res = f"CREATE TABLE {table_name} ("
+#     table = tables[table_name]
+#     for column_name in table:
+#         column_type = str(table[column_name].__name__) # TODO нужны классы из sql
+#         # <col_name1> <col_type1>
+#         name_and_type = f"{column_name} {column_type}"
+#         res += name_and_type + ", "
+#     res += ");"
+#     return res
+
+# def generate_sql_requests():
+#     for table_name in tables:
+#         yield generateCreatingTable(table_name)
+
+
+#     for i in range(50):
+#         funarray = [updateTemplate(), selectTemplate(),
+#                 deleteTemplate(), insertTemplate()]
+#         yield random.choice(funarray)
+
+# for request in generate_sql_requests():
+#     print(request)
+
+def generateCreate():
+    res = []
+    
     return res
 
-def generate_sql_requests():
-    for table_name in tables:
-        yield generateCreatingTable(table_name)
+def generateSelect():
+    res = []
+    for table in tables:
+        for column in tables[table]:
+            res.append("SELECT * FROM " + table + 
+            " WHERE " + column['name'] + "=<" + column['type'] + ">")
+    return res
+            
+res = generateSelect()
+for q in res:
+    print(q)
 
-
-    for i in range(50):
-        funarray = [updateTemplate(), selectTemplate(),
-                deleteTemplate(), insertTemplate()]
-        yield random.choice(funarray)
-
-for request in generate_sql_requests():
-    print(request)
