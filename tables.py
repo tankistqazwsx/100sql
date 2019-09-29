@@ -1,129 +1,108 @@
 tables = {
     'Canteen': 
-    [
-        {
-            'name': 'id',
+    {
+        'id': {
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        {
-            'name': 'title',
+        'title': {
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'workingHours',
+        'workingHours': {
             'type': 'DATE',
             'info': {'notNull'}
         },
-        {
-            'name': 'title',
+        'description':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'phoneNumber',
+        'phoneNumber':{
             'type': 'INTEGER',
             'len': '11'
         }
-    ],
+    },
     'CanteenWorker': 
-    [
-        {
-            'name': 'id',
+    {
+        'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        {
-            'name': 'fullName',
+        'fullName':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'canteenId',
+        'canteenId':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': {'Canteen', 'Id'}
+            'ref': 'Canteen'
         },
-    ],
+    },
     'Courier': 
-    [
-        {
-            'name': 'id',
+    {
+        'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        {
-            'name': 'title',
+        'title':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'description',
+        'description':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'phoneNumber',
+        'phoneNumber':{
             'type': 'INTEGER',
             'len': '11',
         }
-    ],
+    },
     'Order': 
-    [
-        {
-            'name': 'id',
+    {
+        'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        {
-            'name': 'orderNumber',
+        'orderNumber':{
             'type': 'INTEGER',
             'info': {'notNull'}
         },
-        {
-            'name': 'orderTime',
+        'orderTime':{
             'type': 'TIME',
             'info': {'notNull'}
         },
-        {
-            'name': 'quantityDishes',
+        'quantityDishes':{
             'type': 'INTEGER',
             'info': {'notNull'}
         },
-        {
-            'name': 'status',
+        'status':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        {
-            'name': 'amountPayable',
+        'amountPayable':{
             'type': 'INTEGER',
             'info': {'notNull'}
         },
-        {
-            'name': 'canteenWorkerId',
+        'canteenWorkerId':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': {'Canteen', 'Id'}
+            'ref': 'Canteen'
         },
-        {
-            'name': 'courierId',
+        'courierId':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': {'Courier', 'Id'}
+            'ref': 'Courier'
         },
-        {
-            'name': 'clientId',
+        'clientId':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': {'Client', 'Id'}
+            'ref': 'Client'
         },
-    ]
+    }
 }

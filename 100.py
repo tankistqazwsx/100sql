@@ -116,7 +116,7 @@ def generateSelect():
     for table in tables:
         for column in tables[table]:
             res.append("SELECT * FROM " + table + 
-            " WHERE " + column['name'] + "=<" + column['type'] + ">")
+            " WHERE " + column + "=<" + tables[table][column]['type'] + ">")
     return res
             
 res = generateSelect()
