@@ -116,11 +116,12 @@ def generateSelectWithJoin():
         typeOfJoin = "OUTTER"
 
 
-    if random.randint(0, 2) == 0:  # иногда вылетает
+    randomNum = random.randint(0, 2)
+    if randomNum == 0:
         mod = "LEFT"
-    elif random.randint(0, 2) == 1:
+    elif randomNum == 1:
         mod = "RIGHT"
-    elif random.randint(0, 2) == 2:
+    elif randomNum == 2:
         mod = "FULL"
 
     table = random.choice(list(tables.keys()))
