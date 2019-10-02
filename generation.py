@@ -115,6 +115,7 @@ def generateSelectWithJoin():
     else:
         typeOfJoin = "OUTTER"
 
+
     if random.randint(0, 2) == 0:  # иногда вылетает
         mod = "LEFT"
     elif random.randint(0, 2) == 1:
