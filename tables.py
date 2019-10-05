@@ -1,108 +1,190 @@
 tables = {
-    'Canteen': 
+    'city': 
     {
         'id': {
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        'title': {
+        'name': {
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        'workingHours': {
-            'type': 'DATE',
-            'info': {'notNull'}
-        },
-        'description':{
+        'country': {
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        'phoneNumber':{
-            'type': 'INTEGER',
-            'len': '11'
-        }
     },
-    'CanteenWorker': 
+    'train': 
     {
         'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        'fullName':{
+        'number':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+        },
+        'model': {
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        'canteenId':{
+        'type': {
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'capacity':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': 'Canteen'
+        },
+        'companyId': {
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'},
+            'ref': 'company'
         },
     },
-    'Courier': 
+    'company': 
     {
         'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        'title':{
-            'type': 'VARCHAR',
-            'len': '45',
-            'info': {'notNull'}
-        },
-        'description':{
-            'type': 'VARCHAR',
-            'len': '45',
-            'info': {'notNull'}
-        },
-        'phoneNumber':{
+        'number':{
             'type': 'INTEGER',
-            'len': '11',
-        }
+            'info': {'notNull'},
+        },
     },
-    'Order': 
+    'employee': 
     {
         'id':{
             'type': 'INTEGER',
             'info': {'key', 'autoInc', 'notNull'}
         },
-        'orderNumber':{
-            'type': 'INTEGER',
-            'info': {'notNull'}
-        },
-        'orderTime':{
-            'type': 'TIME',
-            'info': {'notNull'}
-        },
-        'quantityDishes':{
-            'type': 'INTEGER',
-            'info': {'notNull'}
-        },
-        'status':{
+        'firstName':{
             'type': 'VARCHAR',
             'len': '45',
             'info': {'notNull'}
         },
-        'amountPayable':{
+        'lastName':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'position':{
             'type': 'INTEGER',
             'info': {'notNull'}
         },
-        'canteenWorkerId':{
+        'workExperience':{
+            'type': 'DOUBLE',
+            'info': {'notNull'}
+        },
+        'companyId':{
+            'type': 'INTEGER',
+            'info': {'notNull'}
+        },
+        'crewId':{
+            'type': 'INTEGER',
+            'info': {'notNull'}
+        },
+    },
+    'company': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'countOfEmployees':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': 'Canteen'
         },
-        'courierId':{
+    },
+    'cruise': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'number':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': 'Courier'
         },
-        'clientId':{
+        'departureTime':{
+            'type': 'DATETIME',
+            'info': {'notNull'}
+        },
+        'arrivingTime':{
+            'type': 'DATETIME',
+            'info': {'notNull'}
+        },
+        'distance':{
+            'type': 'DOUBLE',
+            'info': {'notNull'},
+        },
+        'trainId':{
             'type': 'INTEGER',
             'info': {'notNull'},
-            'ref': 'Client'
+            'ref': ''
         },
-    }
+        'crewId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': ''
+        },
+        'trainstationSorceId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': ''
+        },
+        'transtationDestinationId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': ''
+        },
+    },
+    'trainstationDestination': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'code':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+        },
+        'name':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'cityId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': ''
+        },
+    },
+    'trainstationSource': 
+    {
+        'id':{
+            'type': 'INTEGER',
+            'info': {'key', 'autoInc', 'notNull'}
+        },
+        'code':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+        },
+        'name':{
+            'type': 'VARCHAR',
+            'len': '45',
+            'info': {'notNull'}
+        },
+        'cityId':{
+            'type': 'INTEGER',
+            'info': {'notNull'},
+            'ref': ''
+        },
+    },
 }
