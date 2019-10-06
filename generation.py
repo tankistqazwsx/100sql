@@ -56,6 +56,7 @@ def generateWhereStatements(table, joinTableName=False):
 
 def generateCreatingTable(table_name):
     res = "CREATE TABLE "
+    foo = []
     if randomBoolean():
         res += "IF NOT EXISTS "
     res += f"{table_name} ("
@@ -64,10 +65,11 @@ def generateCreatingTable(table_name):
         column_type = table[column_name]["type"]
         if (table[column_name].get("len")!=None):
             column_type += "(" + table[column_name]["len"] + ")"
-        # <col_name1> <col_type1>
+            
         name_and_type = f"{column_name} {column_type}"
-        res += name_and_type + ", "
-    res += ");"
+        foo.append(name_and_type)
+    res += toStr(foo) + ');'
+    
     return res
 
 
