@@ -56,20 +56,20 @@ def generateWhereStatements(table, joinTableName=False):
 
 def generateCreatingTable(table_name):
     res = "CREATE TABLE "
+    foo = []
     if randomBoolean():
         res += "IF NOT EXISTS "
     res += f"{table_name} ("
     table = tables[table_name]
     for column_name in table:
         column_type = table[column_name]["type"]
-        try:
+        if (table[column_name].get("len")!=None):
             column_type += "(" + table[column_name]["len"] + ")"
-        except KeyError as identifier:
-            pass
-        # <col_name1> <col_type1>
+            
         name_and_type = f"{column_name} {column_type}"
-        res += name_and_type + ", "
-    res += ");"
+        foo.append(name_and_type)
+    res += toStr(foo) + ');'
+    
     return res
 
 
@@ -114,6 +114,7 @@ def generateSelectWithJoin():
         typeOfJoin = 'INNER'
     else:
         typeOfJoin = "OUTTER"
+
 
     randomNum = random.randint(0, 2)
     if randomNum == 0:
